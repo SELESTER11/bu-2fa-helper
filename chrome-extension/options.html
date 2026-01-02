@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BU 2FA Setup</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Inter', sans-serif;
       background: #0a0a0a;
@@ -20,7 +21,7 @@
       padding: 40px 20px;
       min-height: 100vh;
     }
-    
+
     .container {
       max-width: 800px;
       margin: 0 auto;
@@ -29,26 +30,26 @@
       border-radius: 16px;
       padding: 40px;
     }
-    
+
     h1 {
       font-size: 28px;
       margin-bottom: 8px;
       color: #ffffff;
     }
-    
+
     .subtitle {
       color: #737373;
       margin-bottom: 32px;
       font-size: 14px;
     }
-    
+
     .tabs {
       display: flex;
       gap: 12px;
       margin-bottom: 32px;
       border-bottom: 2px solid #2a2a2a;
     }
-    
+
     .tab {
       padding: 12px 24px;
       background: transparent;
@@ -62,24 +63,24 @@
       transition: all 0.2s;
       font-family: 'Inter', sans-serif;
     }
-    
+
     .tab:hover {
       color: #e5e5e5;
     }
-    
+
     .tab.active {
       color: #3b82f6;
       border-bottom-color: #3b82f6;
     }
-    
+
     .tab-content {
       display: none;
     }
-    
+
     .tab-content.active {
       display: block;
     }
-    
+
     .disclaimer {
       background: rgba(239, 68, 68, 0.1);
       border: 2px solid rgba(239, 68, 68, 0.4);
@@ -87,40 +88,40 @@
       padding: 24px;
       margin-bottom: 32px;
     }
-    
+
     .disclaimer h2 {
       color: #ef4444;
       font-size: 18px;
       margin-bottom: 12px;
       font-weight: 600;
     }
-    
+
     .disclaimer p {
       color: #fca5a5;
       line-height: 1.7;
       margin-bottom: 12px;
       font-size: 14px;
     }
-    
+
     .disclaimer p:last-child {
       margin-bottom: 0;
     }
-    
+
     .disclaimer strong {
       color: #fecaca;
       font-weight: 600;
     }
-    
+
     .section {
       margin-bottom: 32px;
     }
-    
+
     .section h2 {
       font-size: 18px;
       margin-bottom: 16px;
       color: #ffffff;
     }
-    
+
     .steps {
       background: #141414;
       border: 1px solid #252525;
@@ -128,7 +129,7 @@
       padding: 24px;
       margin-bottom: 24px;
     }
-    
+
     .step {
       margin-bottom: 20px;
       padding-left: 32px;
@@ -136,11 +137,11 @@
       color: #a3a3a3;
       line-height: 1.7;
     }
-    
+
     .step:last-child {
       margin-bottom: 0;
     }
-    
+
     .step-number {
       position: absolute;
       left: 0;
@@ -156,11 +157,11 @@
       font-weight: 600;
       color: white;
     }
-    
+
     .input-group {
       margin-bottom: 20px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 8px;
@@ -168,8 +169,9 @@
       font-weight: 500;
       color: #e5e5e5;
     }
-    
-    input[type="text"] {
+
+    input[type="text"],
+    input[type="password"] {
       width: 100%;
       padding: 14px 16px;
       background: #141414;
@@ -177,16 +179,23 @@
       border-radius: 8px;
       color: #ffffff;
       font-size: 14px;
-      font-family: 'SF Mono', monospace;
       transition: all 0.2s;
     }
-    
+
+    input[type="text"] {
+      font-family: 'SF Mono', monospace;
+    }
+
+    input[type="password"] {
+      font-family: 'Inter', sans-serif;
+    }
+
     input:focus {
       outline: none;
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
-    
+
     .toggle-group {
       margin-bottom: 20px;
       padding: 16px;
@@ -197,32 +206,32 @@
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .toggle-info h3 {
       font-size: 14px;
       color: #e5e5e5;
       margin-bottom: 4px;
     }
-    
+
     .toggle-info p {
       font-size: 12px;
       color: #737373;
       line-height: 1.5;
     }
-    
+
     .toggle-switch {
       position: relative;
       width: 48px;
       height: 26px;
       flex-shrink: 0;
     }
-    
+
     .toggle-switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
-    
+
     .slider {
       position: absolute;
       cursor: pointer;
@@ -234,7 +243,7 @@
       transition: .3s;
       border-radius: 26px;
     }
-    
+
     .slider:before {
       position: absolute;
       content: "";
@@ -246,21 +255,21 @@
       transition: .3s;
       border-radius: 50%;
     }
-    
-    input:checked + .slider {
+
+    input:checked+.slider {
       background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
     }
-    
-    input:checked + .slider:before {
+
+    input:checked+.slider:before {
       transform: translateX(22px);
     }
-    
+
     .button-group {
       display: flex;
       gap: 12px;
       margin-top: 24px;
     }
-    
+
     button {
       flex: 1;
       padding: 14px 24px;
@@ -272,42 +281,42 @@
       transition: all 0.2s;
       font-family: 'Inter', sans-serif;
     }
-    
+
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-    
+
     .btn-primary {
       background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
       color: white;
     }
-    
+
     .btn-primary:hover:not(:disabled) {
       transform: translateY(-1px);
       box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
     }
-    
+
     .btn-secondary {
       background: #1f1f1f;
       color: #e5e5e5;
       border: 1px solid #2a2a2a;
     }
-    
+
     .btn-secondary:hover:not(:disabled) {
       background: #252525;
     }
-    
+
     .btn-danger {
       background: rgba(239, 68, 68, 0.1);
       color: #ef4444;
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
-    
+
     .btn-danger:hover:not(:disabled) {
       background: rgba(239, 68, 68, 0.2);
     }
-    
+
     .status {
       padding: 14px 16px;
       border-radius: 8px;
@@ -315,21 +324,21 @@
       font-size: 14px;
       display: none;
     }
-    
+
     .status.success {
       background: rgba(34, 197, 94, 0.1);
       border: 1px solid rgba(34, 197, 94, 0.3);
       color: #22c55e;
       display: block;
     }
-    
+
     .status.error {
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.3);
       color: #ef4444;
       display: block;
     }
-    
+
     code {
       background: #1f1f1f;
       padding: 3px 8px;
@@ -338,33 +347,33 @@
       font-size: 13px;
       color: #3b82f6;
     }
-    
+
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 16px;
       margin-bottom: 24px;
     }
-    
+
     .feature-card {
       background: #141414;
       border: 1px solid #252525;
       border-radius: 12px;
       padding: 20px;
     }
-    
+
     .feature-card h3 {
       font-size: 16px;
       color: #ffffff;
       margin-bottom: 8px;
     }
-    
+
     .feature-card p {
       font-size: 13px;
       color: #a3a3a3;
       line-height: 1.6;
     }
-    
+
     .security-info {
       background: #141414;
       border: 1px solid #252525;
@@ -372,18 +381,18 @@
       padding: 24px;
       margin-bottom: 24px;
     }
-    
+
     .security-info h3 {
       font-size: 16px;
       color: #22c55e;
       margin-bottom: 12px;
     }
-    
+
     .security-info ul {
       list-style: none;
       padding: 0;
     }
-    
+
     .security-info li {
       padding: 8px 0;
       padding-left: 24px;
@@ -392,7 +401,7 @@
       font-size: 14px;
       line-height: 1.6;
     }
-    
+
     .security-info li:before {
       content: "✓";
       position: absolute;
@@ -400,64 +409,87 @@
       color: #22c55e;
       font-weight: bold;
     }
-    
+
     .credit {
       text-align: center;
       padding-top: 24px;
       border-top: 1px solid #2a2a2a;
       margin-top: 32px;
     }
-    
+
     .credit p {
       color: #737373;
       font-size: 13px;
       margin-bottom: 8px;
     }
-    
+
     .credit .name {
       color: #3b82f6;
       font-weight: 600;
       font-size: 14px;
     }
-    
+
     .credit .links {
       margin-top: 12px;
     }
-    
+
     .credit .links a {
       color: #737373;
       text-decoration: none;
       font-size: 12px;
       margin: 0 8px;
     }
-    
+
     .credit .links a:hover {
       color: #3b82f6;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>BU 2FA Helper</h1>
     <p class="subtitle">Configure and customize your extension</p>
-    
+
     <div class="tabs">
       <button class="tab active" data-tab="setup">Setup</button>
       <button class="tab" data-tab="settings">Settings</button>
       <button class="tab" data-tab="features">Features</button>
       <button class="tab" data-tab="security">Security</button>
     </div>
-    
+
     <!-- Setup Tab -->
     <div class="tab-content active" id="setup-tab">
       <div class="disclaimer">
         <h2>⚠️ Important Disclaimer</h2>
-        <p><strong>This extension is for convenience only.</strong> By using this extension, you are trading some security for convenience. Your TOTP secret will be stored locally on your device.</p>
-        <p><strong>Security considerations:</strong> Anyone with physical access to your computer could potentially access your 2FA codes. Only use this extension on devices you trust and control.</p>
-        <p><strong>Not affiliated:</strong> This extension is NOT officially affiliated with or endorsed by Binghamton University. Use at your own risk.</p>
-        <p><strong>Recommendation:</strong> Keep Google Authenticator or another 2FA app as a backup in case you need to access your account from another device.</p>
+        <p><strong>This extension is for convenience only.</strong> By using this extension, you are trading some
+          security for convenience. Your TOTP secret will be stored locally on your device.</p>
+        <p><strong>Security considerations:</strong> Anyone with physical access to your computer could potentially
+          access your 2FA codes. Only use this extension on devices you trust and control.</p>
+        <p><strong>Not affiliated:</strong> This extension is NOT officially affiliated with or endorsed by Binghamton
+          University. Use at your own risk.</p>
+        <p><strong>Recommendation:</strong> Keep Google Authenticator or another 2FA app as a backup in case you need to
+          access your account from another device.</p>
       </div>
-      
+
+      <div class="input-group">
+        <label for="username">Binghamton Username (Optional - for full auto-login):</label>
+        <input type="text" id="username" placeholder="Your BU username" autocomplete="username" />
+      </div>
+
+      <div class="input-group">
+        <label for="password">Binghamton Password (Optional - for full auto-login):</label>
+        <input type="password" id="password" placeholder="Your BU password" autocomplete="current-password" />
+      </div>
+
+      <div
+        style="margin-bottom: 24px; padding: 16px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px;">
+        <p style="color: #fca5a5; font-size: 13px; line-height: 1.6;">
+          <strong>Warning:</strong> Storing credentials enables full auto-login but removes ALL security. Anyone with
+          access to your computer can log into your BU account. Only use on devices you personally own and control.
+        </p>
+      </div>
+
       <div class="section">
         <h2>How to get your TOTP secret:</h2>
         <div class="steps">
@@ -487,28 +519,40 @@
           </div>
         </div>
       </div>
-      
+
       <div class="section">
         <div class="input-group">
           <label for="secret">Your TOTP Secret:</label>
           <input type="text" id="secret" placeholder="Paste your TOTP secret here..." autocomplete="off" />
         </div>
-        
+
         <div class="button-group">
           <button class="btn-primary" id="save-btn">Save Secret</button>
           <button class="btn-secondary" id="test-btn">Test Code</button>
           <button class="btn-danger" id="delete-btn">Delete Secret</button>
         </div>
-        
+
         <div class="status" id="status"></div>
       </div>
     </div>
-    
+
     <!-- Settings Tab -->
     <div class="tab-content" id="settings-tab">
       <div class="section">
         <h2>Customize Your Experience</h2>
-        
+
+        <div class="toggle-group">
+          <div class="toggle-info">
+            <h3>Full Auto-Login</h3>
+            <p>Automatically fill username, password, and 2FA code without any clicks (most convenience - least
+              security)</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-auto-login" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
         <div class="toggle-group">
           <div class="toggle-info">
             <h3>Click to Reveal Code</h3>
@@ -519,7 +563,7 @@
             <span class="slider"></span>
           </label>
         </div>
-        
+
         <div class="toggle-group">
           <div class="toggle-info">
             <h3>Sound Effects</h3>
@@ -530,7 +574,7 @@
             <span class="slider"></span>
           </label>
         </div>
-        
+
         <div class="toggle-group">
           <div class="toggle-info">
             <h3>Auto-Clear Clipboard</h3>
@@ -541,37 +585,37 @@
             <span class="slider"></span>
           </label>
         </div>
-        
+
         <div class="status" id="settings-status"></div>
       </div>
     </div>
-    
+
     <!-- Features Tab -->
     <div class="tab-content" id="features-tab">
       <div class="section">
         <h2>What's Included</h2>
-        
+
         <div class="features-grid">
           <div class="feature-card">
             <h3>Dark/Light Theme</h3>
             <p>Toggle between dark and light modes to match your preference</p>
           </div>
-          
+
           <div class="feature-card">
             <h3>Click to Reveal</h3>
             <p>Hide codes by default and click to reveal for shoulder-surfing protection</p>
           </div>
-          
+
           <div class="feature-card">
             <h3>Usage Statistics</h3>
             <p>Track how many times you've used the extension</p>
           </div>
-          
+
           <div class="feature-card">
             <h3>Auto-Clear Clipboard</h3>
             <p>Automatically clear copied codes after 30 seconds</p>
           </div>
-          
+
           <div class="feature-card">
             <h3>Auto-Fill</h3>
             <p>Automatically fill 2FA codes on Binghamton login pages</p>
@@ -579,12 +623,12 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Security Tab -->
     <div class="tab-content" id="security-tab">
       <div class="section">
         <h2>Security Implementation</h2>
-        
+
         <div class="security-info">
           <h3>What We Do to Keep You Safe:</h3>
           <ul>
@@ -597,7 +641,7 @@
             <li>Open source - you can inspect the code</li>
           </ul>
         </div>
-        
+
         <div class="security-info">
           <h3>What You Should Know:</h3>
           <ul>
@@ -608,7 +652,7 @@
             <li>Not recommended for shared or public computers</li>
           </ul>
         </div>
-        
+
         <div class="disclaimer">
           <h2>Best Practices</h2>
           <p>> Enable "Click to Reveal" if you use your computer in public spaces.</p>
@@ -618,7 +662,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="credit">
       <p>Created with care for the BU community</p>
       <p class="name">Made by Varun Karamchandani</p>
@@ -629,7 +673,8 @@
       </div>
     </div>
   </div>
-  
+
   <script src="options.js"></script>
 </body>
+
 </html>

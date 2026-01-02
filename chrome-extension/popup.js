@@ -2,7 +2,8 @@
 let settings = {
     clickToReveal: false,
     soundEnabled: true,
-    autoClearClipboard: true,
+    autoClearClipboard: false,
+    autoLogin: true,
     theme: 'dark'
   };
   
@@ -10,21 +11,21 @@ let settings = {
   let clipboardTimer = null;
   
   // Load settings
-  chrome.storage.local.get(['settings', 'stats'], (result) => {
-    if (result.settings) {
-      settings = { ...settings, ...result.settings };
-      applyTheme();
-      if (settings.clickToReveal) {
-        isCodeHidden = true;
-        document.getElementById('code-wrapper').classList.add('hidden');
-      }
+chrome.storage.local.get(['settings', 'stats'], (result) => {
+  if (result.settings) {
+    settings = { ...settings, ...result.settings };
+    applyTheme();
+    if (settings.clickToReveal) {
+      isCodeHidden = true;
+      document.getElementById('code-wrapper').classList.add('hidden');
     }
-    
-    // Load and display stats
-    if (result.stats) {
-      updateStatsDisplay(result.stats);
-    }
-  });
+  }
+  
+  // Load and display stats
+  if (result.stats) {
+    updateStatsDisplay(result.stats);
+  }
+});
   
   // Apply theme
   function applyTheme() {
@@ -135,8 +136,9 @@ let settings = {
   updateDisplay();
   setInterval(updateDisplay, 1000);
   
-  // Copy button
-  document.getElementById('copy-btn').addEventListener('click', async () => {
+
+ // Copy button
+document.getElementById('copy-btn').addEventListener('click', async () => {
     const code = document.getElementById('code').textContent;
     
     if (code === 'ERROR' || code === '------') {
@@ -159,7 +161,7 @@ let settings = {
     // Update stats
     updateStats();
     
-    // Auto-clear clipboard after 30 seconds
+    // Auto-clear clipboard after 30 seconds (only if enabled)
     if (settings.autoClearClipboard) {
       if (clipboardTimer) clearTimeout(clipboardTimer);
       clipboardTimer = setTimeout(async () => {
