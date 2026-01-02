@@ -113,7 +113,7 @@ cd bu-2fa-helper
 In the **Setup** tab, you'll see three input fields:
 
 1. **Binghamton Username**
-   - Enter your BU username (e.g., `jsmith23` or `jsmith23@binghamton.edu`)
+   - Enter your BU username (e.g., `jsmith23` )
    - This enables full auto-login
 
 2. **Binghamton Password**
@@ -353,5 +353,6 @@ This extension is not affiliated with, endorsed by, or sponsored by Binghamton U
 Use of this extension is at your own risk. The author is not responsible for any account security issues that may arise from using this software.
 
 ---
+
 
 **Remember:** This extension prioritizes convenience over security. Always maintain a backup 2FA method and only use on devices you personally own and control.
