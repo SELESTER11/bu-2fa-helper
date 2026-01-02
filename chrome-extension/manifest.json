@@ -1,38 +1,50 @@
 {
-    "manifest_version": 3,
-    "name": "BU 2FA Helper",
-    "version": "1.0",
-    "description": "Binghamton University 2FA code generator with auto-fill",
-    "permissions": [
-      "activeTab",
-      "storage",
-      "clipboardWrite"
-    ],
-    "host_permissions": [
-      "*://*.binghamton.edu/*"
-    ],
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
-      }
-    },
-    "options_page": "options.html",
-    "content_scripts": [
-      {
-        "matches": ["*://*.binghamton.edu/*"],
-        "js": ["content.js"]
-      }
-    ],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "web_accessible_resources": [
-      {
-        "resources": ["sounds/*.mp3"],
-        "matches": ["<all_urls>"]
-      }
-    ]
-  }
+  "manifest_version": 3,
+  "name": "BU 2FA Helper",
+  "version": "1.0",
+  "description": "Binghamton University 2FA code generator with auto-fill",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "*://*.binghamton.edu/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.binghamton.edu/*"
+      ],
+      "exclude_matches": [
+        "*://brightspace.binghamton.edu/*",
+        "*://d2l.binghamton.edu/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "sounds/*.mp3"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

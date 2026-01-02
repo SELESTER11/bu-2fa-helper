@@ -1,5 +1,8 @@
 // Wait for page to load and settings
 let settings = { autoLogin: true };
+let hasRun = false;
+let isSubmitting = false;
+let observer = null;
 
 // Load settings
 chrome.storage.local.get(['settings'], (result) => {
@@ -7,46 +10,75 @@ chrome.storage.local.get(['settings'], (result) => {
     settings = result.settings;
   }
   
-  // Run auto-login if enabled
-  if (settings.autoLogin) {
+  if (settings.autoLogin && shouldRunOnThisPage()) {
     detectAndAutoFill();
   }
 });
 
+// Check if we should run on this page at all
+function shouldRunOnThisPage() {
+  const url = window.location.href.toLowerCase();
+  
+  // Never run on these pages
+  const blockedPatterns = [
+    'brightspace.com',
+    'd2l.com',
+    'my.binghamton.edu/portal',
+    'brain.binghamton.edu',
+    '/logout',
+    '/dashboard',
+    '/home'
+  ];
+  
+  // If URL contains any blocked pattern, don't run
+  if (blockedPatterns.some(pattern => url.includes(pattern))) {
+    console.log('BU 2FA Helper: Skipping this page (logged-in area)');
+    stopObserver();
+    return false;
+  }
+  
+  return true;
+}
+
+// Stop the mutation observer
+function stopObserver() {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+    console.log('BU 2FA Helper: Observer stopped');
+  }
+}
+
 // Detect page type and auto-fill accordingly
 async function detectAndAutoFill() {
-  const url = window.location.href;
+  if (hasRun || !shouldRunOnThisPage()) return;
   
-  // Check if it's a login page (username/password)
   if (isLoginPage()) {
-    setTimeout(() => autoFillLoginPage(), 500);
-  }
-  // Check if it's a 2FA page
-  else if (is2FAPage()) {
-    setTimeout(() => autoFill2FA(), 500);
+    hasRun = true;
+    setTimeout(() => autoFillLoginPage(), 100);
+  } else if (is2FAPage()) {
+    hasRun = true;
+    setTimeout(() => autoFill2FA(), 100);
   }
 }
 
 function isLoginPage() {
   const url = window.location.href.toLowerCase();
   
-  // Check for Binghamton login URLs
-  if (url.includes('login') || url.includes('cas')) {
-    // Look for username and password fields
-    const usernameField = document.querySelector('input[name="username"], input[name="user"], input[type="text"][name*="user" i], input#username, input#user');
-    const passwordField = document.querySelector('input[type="password"]');
-    
-    return usernameField && passwordField;
+  if (!url.includes('login') && !url.includes('cas')) {
+    return false;
   }
   
-  return false;
+  const usernameField = document.querySelector('input[name="username"], input[name="user"], input[type="text"][name*="user" i], input#username, input#user');
+  const passwordField = document.querySelector('input[type="password"]');
+  
+  return usernameField && passwordField;
 }
 
 function is2FAPage() {
   const url = window.location.href.toLowerCase();
-  const pageText = document.body.innerText.toLowerCase();
+  const pageText = document.body?.innerText?.toLowerCase() || '';
   
-  // Check for 2FA indicators
   const indicators = ['one-time', 'otp', 'verification code', '2fa', 'two-factor', 'authenticator'];
   
   return indicators.some(indicator => 
@@ -55,64 +87,63 @@ function is2FAPage() {
 }
 
 async function autoFillLoginPage() {
+  if (isSubmitting) return;
+  isSubmitting = true;
+  
   try {
-    // Get stored credentials
     const data = await chrome.storage.local.get(['username', 'password']);
     
     if (!data.username || !data.password) {
-      console.log('No credentials stored for auto-login');
+      console.log('BU 2FA Helper: No credentials stored');
+      isSubmitting = false;
       return;
     }
     
-    // Find username field
-    const usernameField = document.querySelector(
-      'input[name="username"], input[name="user"], input[type="text"][name*="user" i], input#username, input#user'
-    );
-    
-    // Find password field
+    const usernameField = document.querySelector('input[name="username"], input[name="user"], input[type="text"][name*="user" i], input#username, input#user');
     const passwordField = document.querySelector('input[type="password"]');
     
     if (usernameField && passwordField) {
-      // Fill username
       usernameField.value = data.username;
       usernameField.dispatchEvent(new Event('input', { bubbles: true }));
       usernameField.dispatchEvent(new Event('change', { bubbles: true }));
       
-      // Fill password
       passwordField.value = data.password;
       passwordField.dispatchEvent(new Event('input', { bubbles: true }));
       passwordField.dispatchEvent(new Event('change', { bubbles: true }));
       
-      console.log('Credentials auto-filled');
+      console.log('BU 2FA Helper: Credentials filled');
       
-      // Auto-submit the form after a short delay
       setTimeout(() => {
         const form = usernameField.closest('form');
         if (form) {
-          // Try to find and click submit button
-          const submitBtn = form.querySelector(
-            'button[type="submit"], input[type="submit"], button[name="submit"]'
-          );
+          const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
           
           if (submitBtn) {
             submitBtn.click();
-            console.log('Login form auto-submitted');
           } else {
-            // If no button found, submit the form directly
             form.submit();
-            console.log('Login form submitted');
           }
+          console.log('BU 2FA Helper: Login submitted');
+          
+          // Stop observer after submission
+          setTimeout(() => stopObserver(), 1000);
         }
+        isSubmitting = false;
       }, 100);
+    } else {
+      isSubmitting = false;
     }
   } catch (error) {
-    console.error('Auto-fill login error:', error);
+    console.error('BU 2FA Helper: Login error', error);
+    isSubmitting = false;
   }
 }
 
 async function autoFill2FA() {
+  if (isSubmitting) return;
+  isSubmitting = true;
+  
   try {
-    // Common selectors for OTP input fields
     const selectors = [
       'input[name*="otp" i]',
       'input[name*="token" i]',
@@ -127,7 +158,6 @@ async function autoFill2FA() {
     
     let otpInput = null;
     
-    // Try to find OTP input field
     for (const selector of selectors) {
       otpInput = document.querySelector(selector);
       if (otpInput && otpInput.offsetParent !== null) {
@@ -136,63 +166,81 @@ async function autoFill2FA() {
     }
     
     if (!otpInput) {
-      console.log('OTP input field not found');
+      console.log('BU 2FA Helper: OTP field not found');
+      isSubmitting = false;
       return;
     }
     
-    console.log('OTP input field found, auto-filling...');
+    console.log('BU 2FA Helper: OTP field found');
     
-    // Get OTP from background script
     chrome.runtime.sendMessage({ action: 'generateOTP' }, (response) => {
       if (response && response.token) {
         otpInput.value = response.token;
-        
-        // Trigger input events for form validation
         otpInput.dispatchEvent(new Event('input', { bubbles: true }));
         otpInput.dispatchEvent(new Event('change', { bubbles: true }));
         
-        console.log('OTP auto-filled:', response.token);
+        console.log('BU 2FA Helper: OTP filled');
         
-        // Auto-submit form after a short delay
         setTimeout(() => {
           const form = otpInput.closest('form');
           if (form) {
-            const submitBtn = form.querySelector(
-              'button[type="submit"], input[type="submit"], button[name="submit"]'
-            );
+            const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
             
             if (submitBtn) {
               submitBtn.click();
-              console.log('2FA form auto-submitted');
             } else {
               form.submit();
-              console.log('2FA form submitted');
             }
+            console.log('BU 2FA Helper: 2FA submitted');
+            
+            // Stop observer after successful 2FA submission
+            setTimeout(() => stopObserver(), 1000);
           }
+          isSubmitting = false;
         }, 100);
+      } else {
+        isSubmitting = false;
       }
     });
     
   } catch (error) {
-    console.error('Auto-fill 2FA error:', error);
+    console.error('BU 2FA Helper: 2FA error', error);
+    isSubmitting = false;
   }
 }
 
-// Watch for page changes (for SPAs)
-const observer = new MutationObserver(() => {
-  if (settings.autoLogin) {
-    detectAndAutoFill();
-  }
-});
-
-observer.observe(document.body, {
-  childList: true,
-  subtree: true
-});
+// Only start observer if we should run on this page
+if (shouldRunOnThisPage()) {
+  let lastUrl = location.href;
+  observer = new MutationObserver(() => {
+    const currentUrl = location.href;
+    if (currentUrl !== lastUrl) {
+      lastUrl = currentUrl;
+      hasRun = false;
+      isSubmitting = false;
+      
+      // Check if we should stop on the new page
+      if (!shouldRunOnThisPage()) {
+        stopObserver();
+        return;
+      }
+      
+      if (settings.autoLogin) {
+        setTimeout(() => detectAndAutoFill(), 300);
+      }
+    }
+  });
+  
+  observer.observe(document, { subtree: true, childList: true });
+}
 
 // Run on page load
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', detectAndAutoFill);
+  document.addEventListener('DOMContentLoaded', () => {
+    if (shouldRunOnThisPage()) detectAndAutoFill();
+  });
 } else {
-  detectAndAutoFill();
+  if (shouldRunOnThisPage()) detectAndAutoFill();
 }
+
+console.log('BU 2FA Helper: Content script loaded');
