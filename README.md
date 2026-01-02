@@ -146,8 +146,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Author
 
 **Varun Karamchandani**
-- Email: vkaramc1@binghamton.edu
-- GitHub: [@yourusername](https://github.com/SELESTER11)
+- Email: vkaramchanda@binghamton.edu
+- GitHub: @SELESTER11(https://github.com/SELESTER11)
 
 ## Acknowledgments
 
@@ -157,3 +157,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Remember**: This extension is not affiliated with or endorsed by Binghamton University. Use at your own risk and always maintain a backup 2FA method.
+
