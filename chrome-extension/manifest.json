@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "BU 2FA Helper",
-  "version": "1.0",
+  "version": "1.2",
   "description": "Binghamton University 2FA code generator with auto-fill",
   "permissions": [
     "activeTab",
