@@ -95,11 +95,19 @@ cd bu-2fa-helper
 2. Leave the "Advanced Private Key" field **blank** (don't enter anything there)
 3. Click **Submit** or **Continue**
 
-**Step 4: Copy Your Secret**
+**Step 4: Copy Your Secret and Verify**
 1. You'll see a QR code and text underneath it
 2. The text looks like: `JBSWY3DPEHPK3PXP` (a long string of letters and numbers)
 3. **Copy this text exactly** (select and Ctrl+C or Cmd+C)
-4. **Important:** Also scan the QR code with Google Authenticator on your phone as a backup
+4. **IMPORTANT:** You need to verify this works before saving:
+   - Open the extension settings (or use Google Authenticator)
+   - Paste the secret and click "Test Code" 
+   - You'll get a 6-digit code (e.g., 123456)
+   - Enter this code in the field on password.binghamton.edu
+   - Click Submit to verify and activate your token
+5. **Backup:** Also scan the QR code with Google Authenticator on your phone as a backup
+
+**Note:** If you don't verify the code, your 2FA won't be activated and won't work for login.
 
 ### Configuring the Extension
 
@@ -356,3 +364,4 @@ Use of this extension is at your own risk. The author is not responsible for any
 
 
 **Remember:** This extension prioritizes convenience over security. Always maintain a backup 2FA method and only use on devices you personally own and control.
+
