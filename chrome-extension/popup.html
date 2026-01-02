@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binghamton 2FA</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Binghamton 2FA</h1>
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <div class="status" id="status">
+          <span class="status-dot"></span>
+          <span>Active</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="code-section">
+      <div class="code-label">Current Code</div>
+      <div class="code-wrapper" id="code-wrapper">
+        <div class="code-display" id="code">------</div>
+        <div class="code-hidden" id="code-hidden">
+          <div class="blur-text">123456</div>
+          <div class="reveal-hint">Click to reveal</div>
+        </div>
+      </div>
+      <div class="timer-bar-container">
+        <div class="timer-bar" id="timer-bar"></div>
+      </div>
+      <div class="timer-text" id="timer-text">-- seconds remaining</div>
+    </div>
+    
+    <button class="btn-copy" id="copy-btn">Copy Code</button>
+    
+    <div class="stats-section">
+      <div class="stat">
+        <div class="stat-label">Total Uses</div>
+        <div class="stat-value" id="total-uses">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Today</div>
+        <div class="stat-value" id="today-uses">0</div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <small>Auto-fill enabled • <a href="#" id="settings-link">Settings</a></small>
+    </div>
+  </div>
+  
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas"></canvas>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
